@@ -23,17 +23,21 @@ function toggleLang(){
 alert("سيتم دعم لغات لاحقاً")
 }
 
-function loginEmail(){
+async function checkEmail(){
 
-let email=prompt("ادخل الايميل")
+let email=document.getElementById("emailInput").value
 
-fetch(API+"/users?email="+email)
-.then(r=>r.json())
-.then(data=>{
+if(!email){
+alert("ادخل البريد الالكتروني")
+return
+}
+
+const res=await fetch(API+"/users?email="+email)
+const data=await res.json()
 
 if(data.length===0){
 
-localStorage.setItem("email",email)
+localStorage.setItem("tempEmail",email)
 location="register.html"
 
 }else{
@@ -43,40 +47,59 @@ location="dashboard.html"
 
 }
 
-})
-
 }
 
-function createAccount(){
+async function createAccount(){
 
 let name=document.getElementById("name").value
 let phone=document.getElementById("phone").value
+let email=document.getElementById("email").value
+let password=document.getElementById("password").value
 
 let roles=[...document.getElementById("role").selectedOptions].map(o=>o.value)
 
-fetch(API+"/users",{
+const res=await fetch(API+"/users",{
 
 method:"POST",
-headers:{'Content-Type':'application/json'},
+
+headers:{
+"Content-Type":"application/json"
+},
 
 body:JSON.stringify({
-
 name,
 phone,
+email,
+password,
 roles
-
 })
 
 })
-.then(r=>r.json())
-.then(user=>{
+
+const user=await res.json()
 
 localStorage.setItem("user",JSON.stringify(user))
 
 location="dashboard.html"
 
-})
+}
 
+if(location.pathname.includes("register")){
+
+const savedEmail=localStorage.getItem("tempEmail")
+
+if(savedEmail){
+document.getElementById("email").value=savedEmail
+}
+
+}
+
+function loginGoogle(){
+alert("تسجيل Google سيتم تفعيله لاحقاً")
+}
+
+function loginApple(){
+alert("تسجيل Apple سيتم تفعيله لاحقاً")
 }
 
 if(location.pathname.includes("dashboard")){
