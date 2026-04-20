@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>إنشاء حساب</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="center">
+
+<h2>إنشاء حساب جديد</h2>
+
+<input id="name" placeholder="اسم المستخدم">
+
+<input id="phone" placeholder="رقم الجوال">
+
+<label>نوع الحساب</label>
+
+<select id="role" multiple>
+
+<option value="client">مستخدم عادي</option>
+<option value="workshop">ورشة</option>
+<option value="distributor">موزع قطع</option>
+<option value="driver">ديليفري</option>
+
+</select>
+
+<button onclick="createAccount()">تسجيل</button>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
