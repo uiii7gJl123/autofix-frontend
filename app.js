@@ -1,6 +1,7 @@
 const API="https://autofix-backend-y8u9.onrender.com"
 
 const text="مرحبا بك, ماهي مشكلة سيارتك اليوم"
+
 let i=0
 
 function typeWriter(){
@@ -23,9 +24,14 @@ function toggleLang(){
 alert("سيتم دعم لغات لاحقاً")
 }
 
+
+/* -------------------------------
+التحقق من الايميل
+--------------------------------*/
+
 async function checkEmail(){
 
-let email=document.getElementById("emailInput").value
+let email=document.getElementById("emailInput").value.trim()
 
 if(!email){
 alert("ادخل البريد الالكتروني")
@@ -37,17 +43,24 @@ const data=await res.json()
 
 if(data.length===0){
 
+// مستخدم جديد
 localStorage.setItem("tempEmail",email)
 location="register.html"
 
 }else{
 
-localStorage.setItem("user",JSON.stringify(data[0]))
-location="dashboard.html"
+// مستخدم موجود
+localStorage.setItem("tempEmail",email)
+location="login.html"
 
 }
 
 }
+
+
+/* -------------------------------
+إنشاء حساب
+--------------------------------*/
 
 async function createAccount(){
 
@@ -84,6 +97,45 @@ location="dashboard.html"
 
 }
 
+
+/* -------------------------------
+ادخال كلمة المرور
+--------------------------------*/
+
+async function loginUser(){
+
+let email=localStorage.getItem("tempEmail")
+let password=document.getElementById("passwordInput").value
+
+const res=await fetch(API+"/users?email="+email)
+const data=await res.json()
+
+if(data.length===0){
+alert("المستخدم غير موجود")
+return
+}
+
+let user=data[0]
+
+if(user.password===password){
+
+localStorage.setItem("user",JSON.stringify(user))
+
+location="dashboard.html"
+
+}else{
+
+document.getElementById("errorMsg").style.display="block"
+
+}
+
+}
+
+
+/* -------------------------------
+تعبئة الايميل تلقائيا
+--------------------------------*/
+
 if(location.pathname.includes("register")){
 
 const savedEmail=localStorage.getItem("tempEmail")
@@ -94,6 +146,21 @@ document.getElementById("email").value=savedEmail
 
 }
 
+if(location.pathname.includes("login")){
+
+const savedEmail=localStorage.getItem("tempEmail")
+
+if(savedEmail){
+document.getElementById("emailText").innerText=savedEmail
+}
+
+}
+
+
+/* -------------------------------
+تسجيل Google / Apple
+--------------------------------*/
+
 function loginGoogle(){
 alert("تسجيل Google سيتم تفعيله لاحقاً")
 }
@@ -101,6 +168,11 @@ alert("تسجيل Google سيتم تفعيله لاحقاً")
 function loginApple(){
 alert("تسجيل Apple سيتم تفعيله لاحقاً")
 }
+
+
+/* -------------------------------
+لوحة التحكم
+--------------------------------*/
 
 if(location.pathname.includes("dashboard")){
 
