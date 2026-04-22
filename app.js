@@ -1,67 +1,55 @@
+const API = "https://autofix-backend-y8u9.onrender.com"
 
-const API="https://autofix-backend-y8u9.onrender.com"
+/* -------------------------------
+رسالة الترحيب
+--------------------------------*/
 
-const text="مرحبا بك, ماهي مشكلة سيارتك اليوم"
-
-let i=0
+const text = "مرحبا بك, ماهي مشكلة سيارتك اليوم"
+let i = 0
 
 function typeWriter(){
-if(i<text.length){
-document.getElementById("typing").innerHTML+=text.charAt(i)
-i++
-setTimeout(typeWriter,80)
-}
+  const el = document.getElementById("typing")
+
+  if(!el) return
+
+  if(i < text.length){
+    el.innerHTML += text.charAt(i)
+    i++
+    setTimeout(typeWriter,80)
+  }
 }
 
 if(document.getElementById("typing")){
-typeWriter()
+  typeWriter()
 }
 
-function toggleTheme(){
-document.body.classList.toggle("dark")
-}
-
-function toggleLang(){
-alert("سيتم دعم لغات لاحقاً")
-}
 
 /* -------------------------------
-التحقق (مبدئي)
+الوضع الداكن
 --------------------------------*/
 
-async function checkEmail(){
-
-let identifier=document.getElementById("emailInput").value.trim()
-
-if(!identifier){
-alert("ادخل البيانات")
-return
+function toggleTheme(){
+  document.body.classList.toggle("dark")
 }
 
-const res=await fetch(API+"/users")
-const data=await res.json()
 
-let user=data.find(u =>
-u.email === identifier ||
-u.phone === identifier ||
-u.username === identifier
-)
+/* -------------------------------
+اللغة
+--------------------------------*/
 
-localStorage.setItem("tempIdentifier",identifier)
-
-if(!user){
-
-localStorage.removeItem("user")
-location="register.html"
-
-}else{
-
-localStorage.removeItem("user")
-location="login.html"
-
+function toggleLang(){
+  alert("سيتم دعم لغات لاحقاً")
 }
 
+
+/* -------------------------------
+الانتقال إلى صفحة تسجيل الدخول
+--------------------------------*/
+
+function goLogin(){
+  location = "login.html"
 }
+
 
 /* -------------------------------
 إنشاء حساب
@@ -69,84 +57,104 @@ location="login.html"
 
 async function createAccount(){
 
-let name=document.getElementById("name").value
-let phone=document.getElementById("phone").value
-let email=document.getElementById("email").value
-let password=document.getElementById("password").value
+  let name = document.getElementById("name").value
+  let phone = document.getElementById("phone").value
+  let email = document.getElementById("email").value
+  let password = document.getElementById("password").value
 
-let roles=[...document.getElementById("role").selectedOptions].map(o=>o.value)
+  let roles = [...document.getElementById("role").selectedOptions].map(o=>o.value)
 
-const res=await fetch(API+"/users",{
+  const res = await fetch(API + "/users",{
 
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
+    method:"POST",
 
-body:JSON.stringify({
-name,
-phone,
-email,
-password,
-roles
-})
+    headers:{
+      "Content-Type":"application/json"
+    },
 
-})
+    body:JSON.stringify({
+      name,
+      phone,
+      email,
+      password,
+      roles
+    })
 
-const user=await res.json()
+  })
 
-localStorage.setItem("user",JSON.stringify(user))
-localStorage.setItem("tempIdentifier",email)
+  const user = await res.json()
 
-location="dashboard.html"
+  localStorage.setItem("user", JSON.stringify(user))
+  localStorage.setItem("tempIdentifier", email)
 
+  location = "dashboard.html"
 }
 
+
 /* -------------------------------
-تسجيل الدخول (موحد)
+تسجيل الدخول عبر API
 --------------------------------*/
 
 async function loginUser(){
 
-let identifier=document.getElementById("identifierInput").value.trim()
-let password=document.getElementById("passwordInput").value
+  let identifier = document.getElementById("identifierInput").value.trim()
+  let password = document.getElementById("passwordInput").value
 
-if(!identifier || !password){
-document.getElementById("errorMsg").innerText="ادخل البيانات كاملة"
-document.getElementById("errorMsg").style.display="block"
-return
+  let error = document.getElementById("errorMsg")
+
+  error.style.display = "none"
+
+  if(!identifier || !password){
+
+    error.innerText = "ادخل البيانات كاملة"
+    error.style.display = "block"
+    return
+
+  }
+
+  try{
+
+    const res = await fetch(API + "/auth/login",{
+
+      method:"POST",
+
+      headers:{
+        "Content-Type":"application/json"
+      },
+
+      body:JSON.stringify({
+        identifier,
+        password
+      })
+
+    })
+
+    const data = await res.json()
+
+    if(!res.ok){
+
+      error.innerText = data.error || "بيانات الدخول غير صحيحة"
+      error.style.display = "block"
+      return
+
+    }
+
+    localStorage.setItem("user", JSON.stringify(data))
+    localStorage.setItem("tempIdentifier", identifier)
+
+    location = "dashboard.html"
+
+  }catch(err){
+
+    console.error(err)
+
+    error.innerText = "خطأ في الاتصال بالخادم"
+    error.style.display = "block"
+
+  }
+
 }
 
-const res=await fetch(API+"/users")
-const data=await res.json()
-
-let user=data.find(u =>
-u.email === identifier ||
-u.phone === identifier ||
-u.username === identifier
-)
-
-if(!user){
-document.getElementById("errorMsg").innerText="المستخدم غير موجود"
-document.getElementById("errorMsg").style.display="block"
-return
-}
-
-if(user.password === password){
-
-localStorage.setItem("user",JSON.stringify(user))
-localStorage.setItem("tempIdentifier",identifier)
-
-location="dashboard.html"
-
-}else{
-
-document.getElementById("errorMsg").innerText="كلمة المرور غير صحيحة"
-document.getElementById("errorMsg").style.display="block"
-
-}
-
-}
 
 /* -------------------------------
 تعبئة register
@@ -154,29 +162,31 @@ document.getElementById("errorMsg").style.display="block"
 
 if(location.pathname.includes("register")){
 
-setTimeout(()=>{
+  setTimeout(()=>{
 
-const saved=localStorage.getItem("tempIdentifier")
+    const saved = localStorage.getItem("tempIdentifier")
 
-if(saved && document.getElementById("email")){
-document.getElementById("email").value=saved
+    if(saved && document.getElementById("email")){
+      document.getElementById("email").value = saved
+    }
+
+  },100)
+
 }
 
-},100)
-
-}
 
 /* -------------------------------
 Google / Apple
 --------------------------------*/
 
 function loginGoogle(){
-alert("تسجيل Google سيتم تفعيله لاحقاً")
+  alert("تسجيل Google سيتم تفعيله لاحقاً")
 }
 
 function loginApple(){
-alert("تسجيل Apple سيتم تفعيله لاحقاً")
+  alert("تسجيل Apple سيتم تفعيله لاحقاً")
 }
+
 
 /* -------------------------------
 Dashboard
@@ -184,28 +194,26 @@ Dashboard
 
 if(location.pathname.includes("dashboard")){
 
-let user=JSON.parse(localStorage.getItem("user"))
+  let user = JSON.parse(localStorage.getItem("user"))
 
-let div=document.getElementById("roles")
+  let div = document.getElementById("roles")
 
-if(user && user.roles){
+  if(user && user.roles){
 
-user.roles.forEach(r=>{
+    user.roles.forEach(r=>{
 
-let btn=document.createElement("button")
+      let btn = document.createElement("button")
 
-btn.innerText=r
+      btn.innerText = r
 
-btn.onclick=()=>{
+      btn.onclick = ()=>{
+        alert("فتح واجهة " + r)
+      }
 
-alert("فتح واجهة "+r)
+      div.appendChild(btn)
 
-}
+    })
 
-div.appendChild(btn)
-
-})
-
-}
+  }
 
 }
