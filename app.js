@@ -45,12 +45,14 @@ if(data.length===0){
 
 // مستخدم جديد
 localStorage.setItem("tempEmail",email)
+localStorage.removeItem("user")
 location="register.html"
 
 }else{
 
 // مستخدم موجود
 localStorage.setItem("tempEmail",email)
+localStorage.removeItem("user")
 location="login.html"
 
 }
@@ -92,6 +94,7 @@ roles
 const user=await res.json()
 
 localStorage.setItem("user",JSON.stringify(user))
+localStorage.setItem("tempEmail",email)
 
 location="dashboard.html"
 
@@ -99,13 +102,18 @@ location="dashboard.html"
 
 
 /* -------------------------------
-ادخال كلمة المرور
+تسجيل الدخول (كلمة المرور)
 --------------------------------*/
 
 async function loginUser(){
 
-let email=localStorage.getItem("tempEmail")
+let email=document.getElementById("emailInput").value.trim()
 let password=document.getElementById("passwordInput").value
+
+if(!email || !password){
+alert("ادخل الايميل وكلمة المرور")
+return
+}
 
 const res=await fetch(API+"/users?email="+email)
 const data=await res.json()
@@ -120,6 +128,7 @@ let user=data[0]
 if(user.password===password){
 
 localStorage.setItem("user",JSON.stringify(user))
+localStorage.setItem("tempEmail",email)
 
 location="dashboard.html"
 
@@ -133,32 +142,26 @@ document.getElementById("errorMsg").style.display="block"
 
 
 /* -------------------------------
-تعبئة الايميل تلقائيا
+تعبئة الايميل في register
 --------------------------------*/
 
 if(location.pathname.includes("register")){
 
+setTimeout(()=>{
+
 const savedEmail=localStorage.getItem("tempEmail")
 
-if(savedEmail){
+if(savedEmail && document.getElementById("email")){
 document.getElementById("email").value=savedEmail
 }
 
-}
-
-if(location.pathname.includes("login")){
-
-const savedEmail=localStorage.getItem("tempEmail")
-
-if(savedEmail){
-document.getElementById("emailText").innerText=savedEmail
-}
+},100)
 
 }
 
 
 /* -------------------------------
-تسجيل Google / Apple
+Google / Apple (لاحقاً)
 --------------------------------*/
 
 function loginGoogle(){
@@ -171,7 +174,7 @@ alert("تسجيل Apple سيتم تفعيله لاحقاً")
 
 
 /* -------------------------------
-لوحة التحكم
+Dashboard
 --------------------------------*/
 
 if(location.pathname.includes("dashboard")){
@@ -179,6 +182,8 @@ if(location.pathname.includes("dashboard")){
 let user=JSON.parse(localStorage.getItem("user"))
 
 let div=document.getElementById("roles")
+
+if(user && user.roles){
 
 user.roles.forEach(r=>{
 
@@ -195,5 +200,7 @@ alert("فتح واجهة "+r)
 div.appendChild(btn)
 
 })
+
+}
 
 }
