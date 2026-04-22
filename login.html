@@ -13,9 +13,18 @@
 <h2>تسجيل الدخول</h2>
 
 <!-- الهوية: email / phone / username -->
-<input id="identifierInput" placeholder="ايميل / رقم جوال / اسم مستخدم">
+<input 
+id="identifierInput" 
+placeholder="ايميل / رقم جوال / اسم مستخدم"
+autocomplete="username"
+>
 
-<input type="password" id="passwordInput" placeholder="ادخل كلمة المرور">
+<input 
+type="password" 
+id="passwordInput" 
+placeholder="ادخل كلمة المرور"
+autocomplete="current-password"
+>
 
 <p id="errorMsg" style="color:red;display:none">
 بيانات الدخول غير صحيحة
@@ -28,12 +37,14 @@
 <script src="app.js"></script>
 
 <script>
-// تعبئة آخر قيمة محفوظة (اختياري)
-const saved = localStorage.getItem("tempIdentifier")
 
-if(saved){
-document.getElementById("identifierInput").value = saved
+/* تعبئة آخر اسم مستخدم استخدمه */
+const savedIdentifier = localStorage.getItem("tempIdentifier")
+
+if(savedIdentifier){
+document.getElementById("identifierInput").value = savedIdentifier
 }
+
 </script>
 
 </body>
