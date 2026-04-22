@@ -12,12 +12,13 @@
 
 <h2>تسجيل الدخول</h2>
 
-<input id="emailInput" placeholder="البريد الالكتروني">
+<!-- الهوية: email / phone / username -->
+<input id="identifierInput" placeholder="ايميل / رقم جوال / اسم مستخدم">
 
 <input type="password" id="passwordInput" placeholder="ادخل كلمة المرور">
 
 <p id="errorMsg" style="color:red;display:none">
-كلمة المرور غير صحيحة
+بيانات الدخول غير صحيحة
 </p>
 
 <button onclick="loginUser()">دخول</button>
@@ -27,13 +28,12 @@
 <script src="app.js"></script>
 
 <script>
+// تعبئة آخر قيمة محفوظة (اختياري)
+const saved = localStorage.getItem("tempIdentifier")
 
-const savedEmail = localStorage.getItem("tempEmail")
-
-if(savedEmail){
-document.getElementById("emailInput").value = savedEmail
+if(saved){
+document.getElementById("identifierInput").value = saved
 }
-
 </script>
 
 </body>
