@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>تسجيل الدخول</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="center">
+
+<h2>تسجيل الدخول</h2>
+
+<p id="emailText"></p>
+
+<input type="password" id="passwordInput" placeholder="ادخل كلمة المرور">
+
+<p id="errorMsg" style="color:red;display:none">
+كلمة المرور غير صحيحة
+</p>
+
+<button onclick="loginUser()">دخول</button>
+
+</div>
+
+<script src="app.js"></script>
+
+<script>
+document.getElementById("emailText").innerText =
+localStorage.getItem("email")
+</script>
+
+</body>
+</html>
