@@ -12,7 +12,7 @@
 
 <h2>تسجيل الدخول</h2>
 
-<p id="emailText"></p>
+<input id="emailInput" placeholder="البريد الالكتروني">
 
 <input type="password" id="passwordInput" placeholder="ادخل كلمة المرور">
 
@@ -27,8 +27,13 @@
 <script src="app.js"></script>
 
 <script>
-document.getElementById("emailText").innerText =
-localStorage.getItem("email")
+
+const savedEmail = localStorage.getItem("tempEmail")
+
+if(savedEmail){
+document.getElementById("emailInput").value = savedEmail
+}
+
 </script>
 
 </body>
