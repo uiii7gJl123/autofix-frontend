@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
+
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>تسجيل الدخول</title>
+
 <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
@@ -13,24 +18,35 @@
 <h2>تسجيل الدخول</h2>
 
 <!-- الهوية: email / phone / username -->
-<input 
-id="identifierInput" 
+<input
+id="identifierInput"
 placeholder="ايميل / رقم جوال / اسم مستخدم"
 autocomplete="username"
+required
 >
 
-<input 
-type="password" 
-id="passwordInput" 
+<input
+type="password"
+id="passwordInput"
 placeholder="ادخل كلمة المرور"
 autocomplete="current-password"
+required
 >
 
 <p id="errorMsg" style="color:red;display:none">
 بيانات الدخول غير صحيحة
 </p>
 
-<button onclick="loginUser()">دخول</button>
+<button onclick="loginUser()">
+دخول
+</button>
+
+<p style="margin-top:15px">
+
+ليس لديك حساب ؟
+<a href="register.html">تسجيل الآن</a>
+
+</p>
 
 </div>
 
@@ -39,10 +55,36 @@ autocomplete="current-password"
 <script>
 
 /* تعبئة آخر اسم مستخدم استخدمه */
+
 const savedIdentifier = localStorage.getItem("tempIdentifier")
 
 if(savedIdentifier){
+
 document.getElementById("identifierInput").value = savedIdentifier
+
+}
+
+/* دعم زر Enter لتسجيل الدخول */
+
+document.addEventListener("keypress", function(e){
+
+if(e.key === "Enter"){
+
+loginUser()
+
+}
+
+})
+
+/* إظهار رسالة الخطأ */
+
+function showError(msg){
+
+const errorBox = document.getElementById("errorMsg")
+
+errorBox.innerText = msg
+errorBox.style.display = "block"
+
 }
 
 </script>
