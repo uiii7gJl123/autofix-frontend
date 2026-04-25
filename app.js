@@ -46,8 +46,8 @@ function toggleLang(){
 الانتقال إلى صفحة تسجيل الدخول
 --------------------------------*/
 
-function goLogin(){
-  location = "login.html"
+function goToLogin(){
+  window.location.href = "login.html"
 }
 
 
@@ -139,7 +139,7 @@ async function loginUser(){
 
     }
 
-    localStorage.setItem("user", JSON.stringify(data))
+    localStorage.setItem("user", JSON.stringify(data.user))
     localStorage.setItem("tempIdentifier", identifier)
 
     location = "dashboard.html"
